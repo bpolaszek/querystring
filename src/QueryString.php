@@ -70,7 +70,7 @@ final class QueryString
     private static function createFromString(string $qs, QueryStringRendererInterface $renderer = null): self
     {
         $params = [];
-        parse_str($qs, $params);
+        parse_str(ltrim($qs, '?'), $params);
         return new self($params, $renderer);
     }
 
