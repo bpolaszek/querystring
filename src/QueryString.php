@@ -4,6 +4,7 @@ namespace BenTools\QueryString;
 
 use BenTools\QueryString\Renderer\NativeRenderer;
 use BenTools\QueryString\Renderer\QueryStringRendererInterface;
+use Generator;
 
 final class QueryString
 {
@@ -146,6 +147,20 @@ final class QueryString
     public function hasParam(string $key, ...$deepKeys): bool
     {
         return [] === $deepKeys ? array_key_exists($key, $this->params) : null !== $this->getParam($key, ...$deepKeys);
+    }
+
+    /**
+     * Yield key => value pairs.
+     *
+     * @return Generator
+     */
+    public function getPairs(): Generator
+    {
+        $pairs = explode($this->renderer->getSeparator() ?? ini_get('arg_separator.input'), (string) $this);
+        foreach ($pairs as $pair) {
+            list($key, $value) = explode('=', $pair);
+            yield $key => $value;
+        }
     }
 
     /**

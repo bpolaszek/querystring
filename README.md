@@ -204,6 +204,35 @@ $uri = $uri->withQuery(
 print((string) $uri); // http://www.example.net/?foo=bar
 ```
 
+## Retrieve key / value pairs
+
+This can be useful if you want to generate hidden input fields based on current query string.
+
+```php
+use function BenTools\QueryString\query_string;
+use function BenTools\QueryString\withoutNumericIndices;
+
+$qs = query_string(
+    'f[status][]=pending&f[status][]=reopened&f[status][]=awaiting', 
+    withoutNumericIndices()
+);
+
+foreach ($qs->getPairs() as $key => $value) {
+    printf(
+        '<input type="hidden" name="%s" value="%s"/>' . PHP_EOL, 
+        urldecode($key), 
+        htmlentities($value)
+    );
+}
+```
+
+Output:
+```
+<input type="hidden" name="f[status][]" value="pending"/>
+<input type="hidden" name="f[status][]" value="reopened"/>
+<input type="hidden" name="f[status][]" value="awaiting"/>
+```
+
 ## Installation
 PHP 7.1+ is required.
 > composer require bentools/querystring 1.0.x-dev

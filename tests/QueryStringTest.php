@@ -7,6 +7,7 @@ use BenTools\QueryString\Renderer\NativeRenderer;
 use BenTools\QueryString\Renderer\QueryStringRendererInterface;
 use function BenTools\QueryString\query_string;
 use BenTools\QueryString\QueryString;
+use function BenTools\QueryString\withoutNumericIndices;
 use League\Uri\Http;
 use PHPUnit\Framework\TestCase;
 
@@ -285,6 +286,54 @@ class QueryStringTest extends TestCase
                 ],
             ]
         ], $qs2->getParams());
+    }
+
+    public function testGetPairs()
+    {
+        $qs = query_string('a=b&c=d&e[]=f&e[]=g&h[foo]=bar&h[bar][]=baz&h[bar][]=bat&boo', withoutNumericIndices());
+        $pairs = $qs->getPairs();
+
+        $this->assertEquals('a', $pairs->key());
+        $this->assertEquals('b', $pairs->current());
+
+        $pairs->next();
+
+        $this->assertEquals('c', $pairs->key());
+        $this->assertEquals('d', $pairs->current());
+
+        $pairs->next();
+
+        $this->assertEquals('e%5B%5D', $pairs->key());
+        $this->assertEquals('f', $pairs->current());
+
+        $pairs->next();
+
+        $this->assertEquals('e%5B%5D', $pairs->key());
+        $this->assertEquals('g', $pairs->current());
+
+        $pairs->next();
+
+        $this->assertEquals('h%5Bfoo%5D', $pairs->key());
+        $this->assertEquals('bar', $pairs->current());
+
+        $pairs->next();
+
+        $this->assertEquals('h%5Bbar%5D%5B%5D', $pairs->key());
+        $this->assertEquals('baz', $pairs->current());
+
+        $pairs->next();
+
+        $this->assertEquals('h%5Bbar%5D%5B%5D', $pairs->key());
+        $this->assertEquals('bat', $pairs->current());
+
+        $pairs->next();
+
+        $this->assertEquals('boo', $pairs->key());
+        $this->assertEquals('', $pairs->current());
+
+
+        $pairs->next();
+        $this->assertNull($pairs->current());
     }
 
     public function testChangeEncoding()
