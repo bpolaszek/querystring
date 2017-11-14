@@ -88,7 +88,7 @@ use function BenTools\QueryString\query_string;
 use function BenTools\QueryString\withoutNumericIndices;
 
 $qs = query_string(
-    'f[status][]=pending&f[status][]=reopened&f[status][]=awaiting', 
+    'f[status][]=pending&f[status][]=reopened&f[status][]=waiting for changes',
     withoutNumericIndices()
 );
 
@@ -103,11 +103,28 @@ foreach ($qs->getPairs() as $key => $value) {
 
 Output:
 ```
-<input type="hidden" name="f[status][]" value="pending"/>
-<input type="hidden" name="f[status][]" value="reopened"/>
-<input type="hidden" name="f[status][]" value="awaiting"/>
+<input type="hidden" name="f%5Bstatus%5D%5B%5D" value="pending"/>
+<input type="hidden" name="f%5Bstatus%5D%5B%5D" value="reopened"/>
+<input type="hidden" name="f%5Bstatus%5D%5B%5D" value="waiting%20for%20changes"/>
 ```
 
+More conveniently, you can `urldecode` keys and values if needed:
+```php
+foreach ($qs->getPairs()->withDecodeKeys(true)->withDecodeValues(true) as $key => $value) {
+    printf(
+        '<input type="hidden" name="%s" value="%s"/>' . PHP_EOL,
+        $key,
+        $value
+    );
+}
+```
+
+Output:
+```
+<input type="hidden" name="f[status][]" value="pending"/>
+<input type="hidden" name="f[status][]" value="reopened"/>
+<input type="hidden" name="f[status][]" value="waiting for changes"/>
+```
 
 
 [Previous](Instanciation.md) - Instanciation

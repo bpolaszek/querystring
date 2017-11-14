@@ -291,7 +291,8 @@ class QueryStringTest extends TestCase
     public function testGetPairs()
     {
         $qs = query_string('a=b&c=d&e[]=f&e[]=g&h[foo]=bar&h[bar][]=baz&h[bar][]=bat&boo', withoutNumericIndices());
-        $pairs = $qs->getPairs();
+        $pairs = new \IteratorIterator($qs->getPairs());
+        $pairs->rewind();
 
         $this->assertEquals('a', $pairs->key());
         $this->assertEquals('b', $pairs->current());

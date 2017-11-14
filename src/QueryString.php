@@ -4,7 +4,7 @@ namespace BenTools\QueryString;
 
 use BenTools\QueryString\Renderer\NativeRenderer;
 use BenTools\QueryString\Renderer\QueryStringRendererInterface;
-use Generator;
+use Traversable;
 
 final class QueryString
 {
@@ -152,15 +152,11 @@ final class QueryString
     /**
      * Yield key => value pairs.
      *
-     * @return Generator
+     * @return Pairs
      */
-    public function getPairs(): Generator
+    public function getPairs(): Traversable
     {
-        $pairs = explode($this->renderer->getSeparator() ?? ini_get('arg_separator.input'), (string) $this);
-        foreach ($pairs as $pair) {
-            list($key, $value) = explode('=', $pair);
-            yield $key => $value;
-        }
+        return new Pairs($this);
     }
 
     /**
