@@ -93,7 +93,13 @@ final class Pairs implements IteratorAggregate
     public function getIterator(): Traversable
     {
         $separator = $this->separator ?? ini_get('arg_separator.input');
+
+        if ('' === $separator) {
+            throw new \RuntimeException("A separator cannot be blank.");
+        }
+
         $pairs = explode($separator, (string) $this->queryString);
+
         foreach ($pairs as $pair) {
             list($key, $value) = explode('=', $pair);
 

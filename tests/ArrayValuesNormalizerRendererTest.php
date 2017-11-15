@@ -41,6 +41,17 @@ class ArrayValuesNormalizerRendererTest extends TestCase
         $this->assertEquals('foo=bar&sort[bar]=desc&sort[foo]=asc&filters[foo][]=bar&filters[foo][]=baz&filters[bar][]=foo bar', urldecode($qs->withRenderer($renderer->withEncoding(PHP_QUERY_RFC1738))));
     }
 
+    public function testRendererOnlyAffectsKeys()
+    {
+        $data = [
+            'foo' => [
+                'bar baz[0]'
+            ]
+        ];
+        $qs = query_string($data);
+        $this->assertEquals('foo%5B%5D=bar%20baz%5B0%5D', (string) $qs->withRenderer(withoutNumericIndices()));
+    }
+
     public function testChangeEncoding()
     {
         $renderer = ArrayValuesNormalizerRenderer::factory();
@@ -69,10 +80,18 @@ class ArrayValuesNormalizerRendererTest extends TestCase
         $renderer = $renderer->withSeparator(null); // Reset to default
         $this->assertEquals('foo=bar~bar=baz', $renderer->render($qs));
 
-        $renderer = $renderer->withSeparator(''); // Blank separator
-        $this->assertEquals('foo=barbar=baz', $renderer->render($qs));
-
         ini_set('arg_separator.output', $this->defaultSeparator);
+    }
+
+    /**
+     * @expectedException  \RuntimeException
+     */
+    public function testBlankSeparator()
+    {
+        $qs = query_string(['foo' => 'bar', 'bar' => 'baz']);
+        $renderer = ArrayValuesNormalizerRenderer::factory();
+        $renderer = $renderer->withSeparator(''); // Blank separator
+        $renderer->render($qs);
     }
 
     public function setUp()
