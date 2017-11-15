@@ -28,8 +28,7 @@ final class Pairs implements IteratorAggregate
     public function __construct(
         QueryString $queryString,
         bool $decodeKeys = false,
-        bool $decodeValues = false,
-        string $separator = null
+        bool $decodeValues = false
     ) {
 
         $this->queryString = $queryString;
