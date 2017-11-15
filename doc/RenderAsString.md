@@ -14,7 +14,8 @@ $qs = query_string([
 
 print(urldecode((string) $qs)); // yummy[fruits][0]=strawberries&yummy[fruits][1]=raspberries
 ```
-_Tip: you can easily remove numeric indices by [switching to another renderer](#change-renderer) or create yours._
+
+Note that the leading question mark will never be included.
 
 ## Change renderer
 

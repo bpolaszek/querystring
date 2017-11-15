@@ -8,6 +8,7 @@ use BenTools\QueryString\Renderer\QueryStringRendererInterface;
 use function BenTools\QueryString\query_string;
 use BenTools\QueryString\QueryString;
 use function BenTools\QueryString\withoutNumericIndices;
+use IteratorIterator;
 use League\Uri\Http;
 use PHPUnit\Framework\TestCase;
 
@@ -291,7 +292,7 @@ class QueryStringTest extends TestCase
     public function testGetPairs()
     {
         $qs = query_string('a=b&c=d&e[]=f&e[]=g&h[foo]=bar&h[bar][]=baz&h[bar][]=bat&boo', withoutNumericIndices());
-        $pairs = new \IteratorIterator($qs->getPairs());
+        $pairs = new IteratorIterator($qs->getPairs());
         $pairs->rewind();
 
         $this->assertEquals('a', $pairs->key());
@@ -335,6 +336,24 @@ class QueryStringTest extends TestCase
 
         $pairs->next();
         $this->assertNull($pairs->current());
+    }
+
+    public function testPairsWithKeyDecoding()
+    {
+        $qs = query_string('foo[bar]=baz bat');
+        $pairs = new IteratorIterator($qs->getPairs(true));
+        $pairs->rewind();
+        $this->assertEquals('foo[bar]', $pairs->key());
+        $this->assertEquals('baz%20bat', $pairs->current());
+    }
+
+    public function testPairsWithValueDecoding()
+    {
+        $qs = query_string('foo[bar]=baz bat');
+        $pairs = new IteratorIterator($qs->getPairs(false, true));
+        $pairs->rewind();
+        $this->assertEquals('foo%5Bbar%5D', $pairs->key());
+        $this->assertEquals('baz bat', $pairs->current());
     }
 
     public function testChangeEncoding()

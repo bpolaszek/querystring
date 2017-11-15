@@ -22,7 +22,7 @@ class PairsTest extends TestCase
     public function testPairsWithKeyDecoding()
     {
         $qs = query_string('foo[bar]=baz bat');
-        $pairs = new IteratorIterator(new Pairs($qs, null, true));
+        $pairs = new IteratorIterator(new Pairs($qs, true));
         $pairs->rewind();
         $this->assertEquals('foo[bar]', $pairs->key());
         $this->assertEquals('baz%20bat', $pairs->current());
@@ -37,7 +37,7 @@ class PairsTest extends TestCase
     public function testPairsWithValueDecoding()
     {
         $qs = query_string('foo[bar]=baz bat');
-        $pairs = new IteratorIterator(new Pairs($qs, null, false, true));
+        $pairs = new IteratorIterator(new Pairs($qs, false, true));
         $pairs->rewind();
         $this->assertEquals('foo%5Bbar%5D', $pairs->key());
         $this->assertEquals('baz bat', $pairs->current());

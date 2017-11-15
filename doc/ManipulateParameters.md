@@ -110,7 +110,7 @@ Output:
 
 More conveniently, you can `urldecode` keys and values if needed:
 ```php
-foreach ($qs->getPairs()->withDecodeKeys(true)->withDecodeValues(true) as $key => $value) {
+foreach ($qs->getPairs($decodeKeys = true, $decodeValues = true) as $key => $value) {
     printf(
         '<input type="hidden" name="%s" value="%s"/>' . PHP_EOL,
         $key,

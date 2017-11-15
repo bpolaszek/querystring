@@ -152,11 +152,13 @@ final class QueryString
     /**
      * Yield key => value pairs.
      *
-     * @return Pairs
+     * @param bool $decodeKeys
+     * @param bool $decodeValues
+     * @return Traversable
      */
-    public function getPairs(): Traversable
+    public function getPairs(bool $decodeKeys = false, bool $decodeValues = false): Traversable
     {
-        return new Pairs($this);
+        return new Pairs($this, $decodeKeys, $decodeValues);
     }
 
     /**

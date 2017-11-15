@@ -13,11 +13,6 @@ final class Pairs implements IteratorAggregate
     private $queryString;
 
     /**
-     * @var string
-     */
-    private $separator;
-
-    /**
      * @var bool
      */
     private $decodeKeys;
@@ -32,13 +27,12 @@ final class Pairs implements IteratorAggregate
      */
     public function __construct(
         QueryString $queryString,
-        string $separator = null,
         bool $decodeKeys = false,
-        bool $decodeValues = false
+        bool $decodeValues = false,
+        string $separator = null
     ) {
 
         $this->queryString = $queryString;
-        $this->separator = $separator;
         $this->decodeKeys = $decodeKeys;
         $this->decodeValues = $decodeValues;
     }
@@ -51,17 +45,6 @@ final class Pairs implements IteratorAggregate
     {
         $clone = clone $this;
         $clone->queryString = $queryString;
-        return $clone;
-    }
-
-    /**
-     * @param null|string $separator
-     * @return Pairs
-     */
-    public function withSeparator(?string $separator): self
-    {
-        $clone = clone $this;
-        $clone->separator = $separator;
         return $clone;
     }
 
@@ -92,7 +75,7 @@ final class Pairs implements IteratorAggregate
      */
     public function getIterator(): Traversable
     {
-        $separator = $this->separator ?? $this->queryString->getRenderer()->getSeparator() ?? ini_get('arg_separator.input');
+        $separator = $this->queryString->getRenderer()->getSeparator() ?? ini_get('arg_separator.input');
         $pairs = explode($separator, (string) $this->queryString);
         foreach ($pairs as $pair) {
             list($key, $value) = explode('=', $pair);

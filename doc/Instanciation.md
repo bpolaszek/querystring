@@ -1,6 +1,6 @@
 # Instanciation
 
-You can create a `QueryString` object from a string or an array of values.
+You can create a `QueryString` object from a PSR-7 `UriInterface` object, a string or an array of values.
 
 ```php
 require_once __DIR__ . '/vendor/autoload.php';
@@ -12,6 +12,7 @@ $qs = query_string($uri);
 
 // Instanciate from a string
 $qs = query_string('foo=bar&baz=bat');
+$qs = query_string('?foo=bar&baz=bat'); // This works too
 
 // Instanciate from an array
 $qs = query_string(['foo' => 'bar', 'baz' => 'bat']);
