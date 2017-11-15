@@ -2,29 +2,18 @@
 
 namespace BenTools\QueryString;
 
+use BenTools\QueryString\Parser\QueryStringParserInterface;
 use BenTools\QueryString\Renderer\ArrayValuesNormalizerRenderer;
-use BenTools\QueryString\Renderer\NativeRenderer;
 use BenTools\QueryString\Renderer\QueryStringRendererInterface;
 
 /**
- * @param                                  $input
- * @param QueryStringRendererInterface|null $renderer
+ * @param $input
  * @return QueryString
  * @throws \InvalidArgumentException
  */
-function query_string($input = null, QueryStringRendererInterface $renderer = null): QueryString
+function query_string($input = null, QueryStringParserInterface $queryStringParser = null): QueryString
 {
-    return QueryString::factory($input, $renderer);
-}
-
-/**
- * @param int $encoding
- * @return NativeRenderer
- * @throws \InvalidArgumentException
- */
-function native(int $encoding = QueryStringRendererInterface::DEFAULT_ENCODING): NativeRenderer
-{
-    return NativeRenderer::factory($encoding);
+    return QueryString::factory($input, $queryStringParser);
 }
 
 /**
@@ -34,4 +23,16 @@ function native(int $encoding = QueryStringRendererInterface::DEFAULT_ENCODING):
 function withoutNumericIndices(QueryStringRendererInterface $renderer = null): ArrayValuesNormalizerRenderer
 {
     return ArrayValuesNormalizerRenderer::factory($renderer);
+}
+
+/**
+ * @param string      $queryString
+ * @param bool        $decodeKeys
+ * @param bool        $decodeValues
+ * @param string|null $separator
+ * @return Pairs
+ */
+function pairs(string $queryString, bool $decodeKeys = false, bool $decodeValues = false, string $separator = null): Pairs
+{
+    return new Pairs($queryString, $decodeKeys, $decodeValues, $separator);
 }

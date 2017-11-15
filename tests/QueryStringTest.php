@@ -2,15 +2,17 @@
 
 namespace BenTools\QueryString\Tests;
 
+use BenTools\QueryString\Parser\QueryStringParserInterface;
+use BenTools\QueryString\QueryString;
 use BenTools\QueryString\Renderer\ArrayValuesNormalizerRenderer;
 use BenTools\QueryString\Renderer\NativeRenderer;
 use BenTools\QueryString\Renderer\QueryStringRendererInterface;
-use function BenTools\QueryString\query_string;
-use BenTools\QueryString\QueryString;
-use function BenTools\QueryString\withoutNumericIndices;
+use BenTools\QueryString\Renderer\QueryStringRendererTrait;
 use IteratorIterator;
 use League\Uri\Http;
 use PHPUnit\Framework\TestCase;
+use function BenTools\QueryString\query_string;
+use function BenTools\QueryString\withoutNumericIndices;
 
 class QueryStringTest extends TestCase
 {
@@ -291,7 +293,7 @@ class QueryStringTest extends TestCase
 
     public function testGetPairs()
     {
-        $qs = query_string('a=b&c=d&e[]=f&e[]=g&h[foo]=bar&h[bar][]=baz&h[bar][]=bat&boo', withoutNumericIndices());
+        $qs = query_string('a=b&c=d&e[]=f&e[]=g&h[foo]=bar&h[bar][]=baz&h[bar][]=bat&boo')->withRenderer(withoutNumericIndices());
         $pairs = new IteratorIterator($qs->getPairs());
         $pairs->rewind();
 
@@ -386,30 +388,48 @@ class QueryStringTest extends TestCase
 
         $qs = query_string([]);
         $qs2 = $qs->withRenderer(new class implements QueryStringRendererInterface {
+
+            use QueryStringRendererTrait;
+
             public function render(QueryString $queryString): string
             {
+                return '';
             }
 
-            public function getEncoding(): int
-            {
-                // TODO: Implement getEncoding() method.
-            }
-
-            public function withEncoding(int $encoding): QueryStringRendererInterface
-            {
-                // TODO: Implement withEncoding() method.
-            }
-
-            public function getSeparator(): string
-            {
-                // TODO: Implement getSeparator() method.
-            }
-
-            public function withSeparator(?string $separator): QueryStringRendererInterface
-            {
-                // TODO: Implement withSeparator() method.
-            }
         });
         $this->assertNotSame($qs, $qs2);
+    }
+
+    public function testAnotherParser()
+    {
+        $dummyParser = new class implements QueryStringParserInterface
+        {
+            public function parse(string $queryString): array
+            {
+                return ['ho' => 'hi'];
+            }
+
+        };
+        $qs = query_string('foo=bar', $dummyParser);
+        $this->assertEquals(['ho' => 'hi'], $qs->getParams());
+    }
+
+    public function testChangeDefaultParser()
+    {
+        $dummyParser = new class implements QueryStringParserInterface
+        {
+            public function parse(string $queryString): array
+            {
+                return ['ho' => 'hi'];
+            }
+
+        };
+        QueryString::setDefaultParser($dummyParser);
+        $qs = query_string('foo=bar');
+        $this->assertEquals(['ho' => 'hi'], $qs->getParams());
+
+        QueryString::restoreDefaultParser();
+        $qs = query_string('foo=bar');
+        $this->assertEquals(['foo' => 'bar'], $qs->getParams());
     }
 }

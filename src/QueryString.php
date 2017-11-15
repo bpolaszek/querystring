@@ -2,6 +2,8 @@
 
 namespace BenTools\QueryString;
 
+use BenTools\QueryString\Parser\NativeParser;
+use BenTools\QueryString\Parser\QueryStringParserInterface;
 use BenTools\QueryString\Renderer\NativeRenderer;
 use BenTools\QueryString\Renderer\QueryStringRendererInterface;
 use Traversable;
@@ -24,67 +26,64 @@ final class QueryString
     private static $defaultRenderer;
 
     /**
+     * @var QueryStringParserInterface
+     */
+    private static $defaultParser;
+
+    /**
      * QueryString constructor.
      * @param array|null                       $params
-     * @param QueryStringRendererInterface|null $renderer
      * @throws \InvalidArgumentException
      */
-    protected function __construct(?array $params = [], QueryStringRendererInterface $renderer = null)
+    protected function __construct(?array $params = [])
     {
         $params = $params ?? [];
         foreach ($params as $key => $value) {
             $this->params[(string) $key] = $value;
         }
-        $this->renderer = $renderer ?? self::getDefaultRenderer();
+        $this->renderer = self::getDefaultRenderer();
     }
 
     /**
      * @param array $params
-     * @param QueryStringRendererInterface|null $renderer
      * @return QueryString
      */
-    private static function createFromParams(array $params, QueryStringRendererInterface $renderer = null): self
+    private static function createFromParams(array $params): self
     {
-        return new self($params, $renderer);
+        return new self($params);
     }
 
     /**
-     * @param \Psr\Http\Message\UriInterface $uri
-     * @param QueryStringRendererInterface|null $renderer
+     * @param \Psr\Http\Message\UriInterface  $uri
+     * @param QueryStringParserInterface $queryStringParser
      * @return QueryString
-     * @throws \TypeError
      */
-    private static function createFromUri($uri, QueryStringRendererInterface $renderer = null): self
+    private static function createFromUri($uri, QueryStringParserInterface $queryStringParser): self
     {
-        $qs = $uri->getQuery();
-        $params = [];
-        parse_str($qs, $params);
-        return new self($params, $renderer);
+        return self::createFromString($uri->getQuery(), $queryStringParser);
     }
 
     /**
-     * @param string $qs
-     * @param QueryStringRendererInterface|null $renderer
+     * @param string                     $string
+     * @param QueryStringParserInterface $queryStringParser
      * @return QueryString
      */
-    private static function createFromString(string $qs, QueryStringRendererInterface $renderer = null): self
+    private static function createFromString(string $string, QueryStringParserInterface $queryStringParser): self
     {
-        $params = [];
-        parse_str(ltrim($qs, '?'), $params);
-        return new self($params, $renderer);
+        return new self($queryStringParser->parse($string));
     }
 
     /**
-     * @param QueryStringRendererInterface|null $renderer
+     * @param QueryStringParserInterface|null $queryStringParser
      * @return QueryString
      * @throws \RuntimeException
      */
-    public static function createFromCurrentLocation(QueryStringRendererInterface $renderer = null): self
+    public static function createFromCurrentLocation(QueryStringParserInterface $queryStringParser = null): self
     {
         if (!isset($_SERVER['REQUEST_URI'])) {
             throw new \RuntimeException('$_SERVER[\'REQUEST_URI\'] has not been set.');
         }
-        return self::createFromString($_SERVER['REQUEST_URI'], $renderer);
+        return self::createFromString($_SERVER['REQUEST_URI'], $queryStringParser ?? self::getDefaultParser());
     }
 
     /**
@@ -93,24 +92,26 @@ final class QueryString
      */
     public function withCurrentLocation(): self
     {
-        return self::createFromCurrentLocation($this->renderer);
+        return self::createFromCurrentLocation();
     }
 
     /**
-     * @param          $input
+     * @param                                 $input
+     * @param QueryStringParserInterface|null $queryStringParser
      * @return QueryString
      * @throws \InvalidArgumentException
+     * @throws \TypeError
      */
-    public static function factory($input = null, QueryStringRendererInterface $renderer = null): self
+    public static function factory($input = null, QueryStringParserInterface $queryStringParser = null): self
     {
         if (is_array($input)) {
-            return self::createFromParams($input, $renderer);
-        } elseif (is_a($input, 'Psr\Http\Message\UriInterface')) {
-            return self::createFromUri($input, $renderer);
-        } elseif (is_string($input)) {
-            return self::createFromString($input, $renderer);
+            return self::createFromParams($input);
         } elseif (null === $input) {
-            return self::createFromParams([], $renderer);
+            return self::createFromParams([]);
+        } elseif (is_a($input, 'Psr\Http\Message\UriInterface')) {
+            return self::createFromUri($input, $queryStringParser ?? self::getDefaultParser());
+        } elseif (is_string($input)) {
+            return self::createFromString($input, $queryStringParser ?? self::getDefaultParser());
         }
         throw new \InvalidArgumentException(sprintf('Expected array, string or Psr\Http\Message\UriInterface, got %s', is_object($input) ? get_class($input) : gettype($input)));
     }
@@ -158,7 +159,7 @@ final class QueryString
      */
     public function getPairs(bool $decodeKeys = false, bool $decodeValues = false): Traversable
     {
-        return new Pairs($this, $decodeKeys, $decodeValues);
+        return new Pairs((string) $this, $decodeKeys, $decodeValues, $this->getRenderer()->getSeparator());
     }
 
     /**
@@ -308,5 +309,36 @@ final class QueryString
     public static function restoreDefaultRenderer(): void
     {
         self::$defaultRenderer = NativeRenderer::factory();
+    }
+
+    /**
+     * Returns the default parser.
+     *
+     * @return QueryStringParserInterface
+     */
+    public static function getDefaultParser(): QueryStringParserInterface
+    {
+        if (!isset(self::$defaultParser)) {
+            self::restoreDefaultParser();
+        }
+        return self::$defaultParser;
+    }
+
+    /**
+     * Changes default parser.
+     *
+     * @param QueryStringParserInterface $defaultParser
+     */
+    public static function setDefaultParser(QueryStringParserInterface $defaultParser): void
+    {
+        self::$defaultParser = $defaultParser;
+    }
+
+    /**
+     * Restores the default parser.
+     */
+    public static function restoreDefaultParser(): void
+    {
+        self::$defaultParser = new NativeParser();
     }
 }

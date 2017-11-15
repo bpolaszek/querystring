@@ -8,7 +8,7 @@ use Traversable;
 final class Pairs implements IteratorAggregate
 {
     /**
-     * @var QueryString
+     * @var string
      */
     private $queryString;
 
@@ -23,24 +23,31 @@ final class Pairs implements IteratorAggregate
     private $decodeValues;
 
     /**
+     * @var null|string
+     */
+    private $separator;
+
+    /**
      * Pairs constructor.
      */
     public function __construct(
-        QueryString $queryString,
+        string $queryString,
         bool $decodeKeys = false,
-        bool $decodeValues = false
+        bool $decodeValues = false,
+        string $separator = null
     ) {
 
         $this->queryString = $queryString;
         $this->decodeKeys = $decodeKeys;
         $this->decodeValues = $decodeValues;
+        $this->separator = $separator;
     }
 
     /**
-     * @param QueryString $queryString
+     * @param string $queryString
      * @return Pairs
      */
-    public function withQueryString(QueryString $queryString): self
+    public function withQueryString(string $queryString): self
     {
         $clone = clone $this;
         $clone->queryString = $queryString;
@@ -70,11 +77,22 @@ final class Pairs implements IteratorAggregate
     }
 
     /**
+     * @param null|string $separator
+     * @return Pairs
+     */
+    public function withSeparator(?string $separator): self
+    {
+        $clone = clone $this;
+        $clone->separator = $separator;
+        return $clone;
+    }
+
+    /**
      * @return Traversable
      */
     public function getIterator(): Traversable
     {
-        $separator = $this->queryString->getRenderer()->getSeparator() ?? ini_get('arg_separator.input');
+        $separator = $this->separator ?? ini_get('arg_separator.input');
         $pairs = explode($separator, (string) $this->queryString);
         foreach ($pairs as $pair) {
             list($key, $value) = explode('=', $pair);

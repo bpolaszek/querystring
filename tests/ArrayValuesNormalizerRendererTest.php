@@ -3,11 +3,10 @@
 namespace BenTools\QueryString\Tests;
 
 use BenTools\QueryString\Renderer\ArrayValuesNormalizerRenderer;
-use function BenTools\QueryString\query_string;
-use function BenTools\QueryString\withoutNumericIndices;
-use BenTools\QueryString\Renderer\NativeRenderer;
 use BenTools\QueryString\Renderer\QueryStringRendererInterface;
 use PHPUnit\Framework\TestCase;
+use function BenTools\QueryString\query_string;
+use function BenTools\QueryString\withoutNumericIndices;
 
 class ArrayValuesNormalizerRendererTest extends TestCase
 {
