@@ -101,7 +101,6 @@ final class Pairs implements IteratorAggregate
         $pairs = explode($separator, $this->queryString);
 
         foreach ($pairs as $pair) {
-
             $keyValue = explode('=', $pair);
             $key = $keyValue[0];
             $value = $keyValue[1] ?? null;
