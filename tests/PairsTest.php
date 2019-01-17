@@ -56,4 +56,10 @@ class PairsTest extends TestCase
         $qs = 'foo=bar;baz=bat';
         $this->assertEquals(['foo' => 'bar', 'baz' => 'bat'], iterator_to_array((new Pairs($qs))->withSeparator(';')));
     }
+
+    public function testPairsWithMissingValues()
+    {
+        $qs = 'foo=&baz';
+        $this->assertEquals(['foo' => '', 'baz' => null], iterator_to_array(new Pairs($qs, false, false)));
+    }
 }
