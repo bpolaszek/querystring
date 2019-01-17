@@ -98,10 +98,12 @@ final class Pairs implements IteratorAggregate
             throw new \RuntimeException("A separator cannot be blank.");
         }
 
-        $pairs = explode($separator, (string) $this->queryString);
+        $pairs = explode($separator, $this->queryString);
 
         foreach ($pairs as $pair) {
-            list($key, $value) = explode('=', $pair);
+            $keyValue = explode('=', $pair);
+            $key = $keyValue[0];
+            $value = $keyValue[1] ?? null;
 
             if (true === $this->decodeKeys) {
                 $key = urldecode($key);
