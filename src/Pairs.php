@@ -92,6 +92,10 @@ final class Pairs implements IteratorAggregate
      */
     public function getIterator(): Traversable
     {
+        if ('' === trim($this->queryString)) {
+            return;
+        }
+
         $separator = $this->separator ?? ini_get('arg_separator.input');
 
         if ('' === $separator) {

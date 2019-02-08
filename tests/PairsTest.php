@@ -62,4 +62,10 @@ class PairsTest extends TestCase
         $qs = 'foo=&baz';
         $this->assertEquals(['foo' => '', 'baz' => null], iterator_to_array(new Pairs($qs, false, false)));
     }
+
+    public function testPairsOnEmptyQueryString()
+    {
+        $qs = ' ';
+        $this->assertEquals([], iterator_to_array(new Pairs($qs)));
+    }
 }
