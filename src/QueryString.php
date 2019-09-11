@@ -2,6 +2,8 @@
 
 namespace BenTools\QueryString;
 
+use BenTools\QueryString\Merger\DefaultMerger;
+use BenTools\QueryString\Merger\QueryStringMergerInterface;
 use BenTools\QueryString\Parser\NativeParser;
 use BenTools\QueryString\Parser\QueryStringParserInterface;
 use BenTools\QueryString\Renderer\NativeRenderer;
@@ -21,6 +23,11 @@ final class QueryString
     private $renderer;
 
     /**
+     * @var QueryStringMergerInterface|null
+     */
+    private $merger;
+
+    /**
      * @var QueryStringRendererInterface
      */
     private static $defaultRenderer;
@@ -30,18 +37,22 @@ final class QueryString
      */
     private static $defaultParser;
 
-    /**
-     * QueryString constructor.
-     * @param array|null                       $params
-     * @throws \InvalidArgumentException
-     */
-    protected function __construct(?array $params = [])
+    public function __construct(?array $params = [], ?QueryStringRendererInterface $renderer = null, ?QueryStringMergerInterface $merger = null)
     {
         $params = $params ?? [];
         foreach ($params as $key => $value) {
             $this->params[(string) $key] = $value;
         }
-        $this->renderer = self::getDefaultRenderer();
+        $this->renderer = $renderer ?? new NativeRenderer();
+        $this->merger = $merger ?? new DefaultMerger();
+    }
+
+    public function reset(array $params = []): self
+    {
+        $clone = clone $this;
+        $clone->params = $params;
+
+        return $clone;
     }
 
     /**
@@ -180,12 +191,7 @@ final class QueryString
      */
     public function withParams(array $params): self
     {
-        $clone = clone $this;
-        $clone->params = [];
-        foreach ($params as $key => $value) {
-            $clone->params[(string) $key] = $value;
-        }
-        return $clone;
+        return $this->merger->merge($this, $params, true);
     }
 
     /**

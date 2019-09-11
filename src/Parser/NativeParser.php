@@ -10,7 +10,7 @@ class NativeParser implements QueryStringParserInterface
     public function parse(string $queryString): array
     {
         $params = [];
-        parse_str(ltrim($queryString, '?'), $params);
+        \parse_str(\ltrim($queryString, '?'), $params);
         return $params;
     }
 }

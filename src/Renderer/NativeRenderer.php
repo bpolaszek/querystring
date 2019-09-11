@@ -12,8 +12,9 @@ final class NativeRenderer implements QueryStringRendererInterface
      * NativeRenderer constructor.
      * @param int $encoding
      */
-    protected function __construct(int $encoding)
+    public function __construct(int $encoding = self::DEFAULT_ENCODING)
     {
+        self::validateEncoding($encoding);
         $this->encoding = $encoding;
     }
 
@@ -21,11 +22,10 @@ final class NativeRenderer implements QueryStringRendererInterface
      * @param int $encoding
      * @return NativeRenderer
      * @throws \InvalidArgumentException
+     * @deprecated
      */
     public static function factory(int $encoding = self::DEFAULT_ENCODING): self
     {
-        self::validateEncoding($encoding);
-
         return new self($encoding);
     }
 
@@ -35,10 +35,10 @@ final class NativeRenderer implements QueryStringRendererInterface
      */
     public function render(QueryString $queryString): string
     {
-        return http_build_query(
+        return \http_build_query(
             $queryString->getParams(),
             null,
-            $this->separator ?? ini_get('arg_separator.output'),
+            $this->separator ?? (\ini_get('arg_separator.output') ?: '&'),
             $this->encoding
         );
     }

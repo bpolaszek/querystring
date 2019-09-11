@@ -30,9 +30,9 @@ trait QueryStringRendererTrait
     public function withEncoding(int $encoding): QueryStringRendererInterface
     {
         self::validateEncoding($encoding);
-
         $clone = clone $this;
         $clone->encoding = $encoding;
+
         return $clone;
     }
 
@@ -62,7 +62,7 @@ trait QueryStringRendererTrait
      */
     protected static function validateEncoding(int $encoding): void
     {
-        if (!in_array($encoding, [PHP_QUERY_RFC1738, PHP_QUERY_RFC3986])) {
+        if (!\in_array($encoding, [\PHP_QUERY_RFC1738, \PHP_QUERY_RFC3986], true)) {
             throw new \InvalidArgumentException("Invalid encoding.");
         }
     }

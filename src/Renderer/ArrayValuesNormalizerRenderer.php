@@ -14,14 +14,15 @@ final class ArrayValuesNormalizerRenderer implements QueryStringRendererInterfac
     private $renderer;
 
     /**
-     * ArrayValuesStringifier constructor.
+     * ArrayValuesNormalizerRenderer constructor.
+     * @param QueryStringRendererInterface|null $renderer
      */
     protected function __construct(QueryStringRendererInterface $renderer = null)
     {
         $this->renderer = $renderer;
     }
 
-    public static function factory(QueryStringRendererInterface $renderer = null)
+    public static function factory(QueryStringRendererInterface $renderer = null): self
     {
         return new self($renderer ?? NativeRenderer::factory());
     }
@@ -31,7 +32,7 @@ final class ArrayValuesNormalizerRenderer implements QueryStringRendererInterfac
      */
     public function render(QueryString $queryString): string
     {
-        $separator = $this->getSeparator() ?? ini_get('arg_separator.output');
+        $separator = $this->getSeparator() ?? (ini_get('arg_separator.output') ?: '&');
         $input = $this->renderer->render($queryString);
         $output = '';
 
