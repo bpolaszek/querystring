@@ -4,6 +4,7 @@ namespace BenTools\QueryString;
 
 use BenTools\QueryString\Parser\QueryStringParserInterface;
 use BenTools\QueryString\Renderer\ArrayValuesNormalizerRenderer;
+use BenTools\QueryString\Renderer\FlatRenderer;
 use BenTools\QueryString\Renderer\QueryStringRendererInterface;
 
 /**
@@ -23,6 +24,15 @@ function query_string($input = null, QueryStringParserInterface $queryStringPars
 function withoutNumericIndices(QueryStringRendererInterface $renderer = null): ArrayValuesNormalizerRenderer
 {
     return ArrayValuesNormalizerRenderer::factory($renderer);
+}
+
+/**
+ * @param QueryStringRendererInterface|null $renderer
+ * @return FlatRenderer
+ */
+function flat(QueryStringRendererInterface $renderer = null): FlatRenderer
+{
+    return FlatRenderer::factory($renderer);
 }
 
 /**
