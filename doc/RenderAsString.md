@@ -19,16 +19,30 @@ Note that the leading question mark will never be included.
 
 ## Change renderer
 
-Remove numeric indices:
+### Remove numeric indices:
+This renderer will render indexed arrays as `foo[]=bar&foo[]=baz` instead of `foo[0]=bar&foo[1]=baz`.
+
 ```php
 use function BenTools\QueryString\withoutNumericIndices;
-$qs = $qs->withRenderer(
-    withoutNumericIndices()
-);
-print(urldecode((string) $qs)); // yummy[fruits][]=strawberries&yummy[fruits][]=raspberries
+
+$qs = $qs->withRenderer(withoutNumericIndices());
+print(urldecode((string) $qs));
 ```
 
-Or define it on a global scope for future QueryString objects:
+### Flat renderer
+This renderer will render indexed arrays as `foo=bar&foo=baz` instead of `foo[0]=bar&foo[1]=baz`.
+
+```php
+use function BenTools\QueryString\flat;
+
+$qs = $qs->withRenderer(flat());
+print(urldecode((string) $qs));
+```
+
+### Global setting
+
+You can define a default renderer on a global scope for future QueryString objects:
+
 ```php
 use BenTools\QueryString\QueryString;
 use function BenTools\QueryString\withoutNumericIndices;
