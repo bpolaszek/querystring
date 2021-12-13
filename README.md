@@ -15,7 +15,7 @@ Because I needed an intuitive way to add or remove parameters from a query strin
 
 Oh, and, I also wanted that `['foos' => ['foo', 'bar']]` resolved to `foos[]=foo&foos[]=bar` instead of `foos[0]=foo&foos[1]=bar`, unlike many libraries do.
 
-This behavior is not the default one of that library, but there's an [easy way to change it](doc/RenderAsString.md#change-renderer).
+Thanks to object-oriented design, you can define the way query strings are [parsed](doc/Instantiation.md) and [rendered](doc/RenderAsString.md#change-renderer).
 
 ## Usage
 
@@ -44,7 +44,7 @@ print $qs; // foo=foofoo&ho=hi
 
 ## Documentation
 
-[Instanciation](doc/Instanciation.md)
+[Instantiation / Parsing](doc/Instantiation.md)
 
 [Manipulate parameters](doc/ManipulateParameters.md)
 
@@ -52,7 +52,7 @@ print $qs; // foo=foofoo&ho=hi
 
 ## Installation
 PHP 7.1+ is required.
-> composer require bentools/querystring 1.0.x-dev
+> composer require bentools/querystring:^1.0
 
 ## Tests
 > ./vendor/bin/phpunit
