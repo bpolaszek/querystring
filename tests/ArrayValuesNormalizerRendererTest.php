@@ -13,7 +13,7 @@ class ArrayValuesNormalizerRendererTest extends TestCase
 
     private $defaultSeparator;
 
-    public function testRenderer()
+    public function testRenderer(): void
     {
         $data = [
             'foo' => 'bar',
@@ -41,7 +41,7 @@ class ArrayValuesNormalizerRendererTest extends TestCase
         $this->assertEquals('foo=bar&sort[bar]=desc&sort[foo]=asc&filters[foo][]=bar&filters[foo][]=baz&filters[bar][]=foo bar', urldecode($qs->withRenderer($renderer->withEncoding(PHP_QUERY_RFC1738))));
     }
 
-    public function testRendererOnlyAffectsKeys()
+    public function testRendererOnlyAffectsKeys(): void
     {
         $data = [
             'foo' => [
@@ -52,7 +52,7 @@ class ArrayValuesNormalizerRendererTest extends TestCase
         $this->assertEquals('foo%5B%5D=bar%20baz%5B0%5D', (string) $qs->withRenderer(withoutNumericIndices()));
     }
 
-    public function testChangeEncoding()
+    public function testChangeEncoding(): void
     {
         $renderer = ArrayValuesNormalizerRenderer::factory();
         $this->assertNotSame($renderer->withEncoding($renderer->getEncoding()), $renderer);
@@ -62,7 +62,7 @@ class ArrayValuesNormalizerRendererTest extends TestCase
         $this->assertEquals(PHP_QUERY_RFC1738, $renderer->getEncoding());
     }
 
-    public function testChangeSeparator()
+    public function testChangeSeparator(): void
     {
 
         ini_set('arg_separator.output', '~');
@@ -83,23 +83,21 @@ class ArrayValuesNormalizerRendererTest extends TestCase
         ini_set('arg_separator.output', $this->defaultSeparator);
     }
 
-    /**
-     * @expectedException  \RuntimeException
-     */
-    public function testBlankSeparator()
+    public function testBlankSeparator(): void
     {
+        $this->expectException(\RuntimeException::class);
         $qs = query_string(['foo' => 'bar', 'bar' => 'baz']);
         $renderer = ArrayValuesNormalizerRenderer::factory();
         $renderer = $renderer->withSeparator(''); // Blank separator
         $renderer->render($qs);
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->defaultSeparator = ini_get('arg_separator.output');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         ini_set('arg_separator.output', $this->defaultSeparator);
     }

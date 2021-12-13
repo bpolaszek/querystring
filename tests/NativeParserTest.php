@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 class NativeParserTest extends TestCase
 {
 
-    public function testParser()
+    public function testParser(): void
     {
         $parser = new NativeParser();
         $this->assertEquals(['foo' => 'bar', 'baz' => 'bat'], $parser->parse('foo=bar&baz=bat'));

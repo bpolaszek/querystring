@@ -17,10 +17,9 @@
     },
     "require-dev": {
         "league/uri": "^5.0",
-        "php-coveralls/php-coveralls": "^2.4",
-        "phpunit/phpunit": "^5.0|^6.0|^7.0",
+        "phpunit/phpunit": "^7.5|^8.0|^9.0",
         "squizlabs/php_codesniffer": "^3.0",
-        "symfony/var-dumper": "^3.3"
+        "symfony/var-dumper": "@stable"
     },
     "autoload": {
         "psr-4": {

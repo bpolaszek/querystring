@@ -1,13 +1,13 @@
 [![Latest Stable Version](https://poser.pugx.org/bentools/querystring/v/stable)](https://packagist.org/packages/bentools/querystring)
 [![License](https://poser.pugx.org/bentools/querystring/license)](https://packagist.org/packages/bentools/querystring)
-[![Build Status](https://img.shields.io/travis/bpolaszek/querystring/master.svg?style=flat-square)](https://travis-ci.org/bpolaszek/querystring)
-[![Coverage Status](https://coveralls.io/repos/github/bpolaszek/querystring/badge.svg?branch=master)](https://coveralls.io/github/bpolaszek/querystring?branch=master)
+[![CI Workflow](https://github.com/bpolaszek/querystring/actions/workflows/ci-workflow.yml/badge.svg)](https://github.com/bpolaszek/querystring/actions/workflows/ci-workflow.yml)
+[![Coverage](https://codecov.io/gh/bpolaszek/querystring/branch/master/graph/badge.svg?token=9AXQUHY1R7)](https://codecov.io/gh/bpolaszek/querystring)
 [![Quality Score](https://img.shields.io/scrutinizer/g/bpolaszek/querystring.svg?style=flat-square)](https://scrutinizer-ci.com/g/bpolaszek/querystring)
 [![Total Downloads](https://poser.pugx.org/bentools/querystring/downloads)](https://packagist.org/packages/bentools/querystring)
 
 # QueryString
 
-A PSR-7 compliant query string manipulator, with **no dependency**. Not even PSR-7, actually.
+A lightweight, object-oriented, Query String manipulation library.
 
 ## Why?
 
