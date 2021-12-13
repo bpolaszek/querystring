@@ -8,7 +8,7 @@ use function BenTools\QueryString\query_string;
 
 class FlatRendererTest extends TestCase
 {
-    public function testRenderer()
+    public function testRenderer(): void
     {
         $data = [
             'foo' => 'bar',

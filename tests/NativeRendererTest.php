@@ -11,7 +11,7 @@ class NativeRendererTest extends TestCase
 {
     private $defaultSeparator;
 
-    public function testRenderer()
+    public function testRenderer(): void
     {
         $data = [
             'foo' => 'bar',
@@ -40,24 +40,20 @@ class NativeRendererTest extends TestCase
         $this->assertEquals('foo=bar&sort[bar]=desc&sort[foo]=asc&filters[foo][0]=bar&filters[foo][1]=baz&filters[bar][0]=foo bar', urldecode($qs->withRenderer($renderer->withEncoding(PHP_QUERY_RFC1738))));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testFactoryFails()
+    public function testFactoryFails(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
         NativeRenderer::factory(1000);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testChangeEncodingFails()
+    public function testChangeEncodingFails(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
         $renderer = NativeRenderer::factory();
         $renderer->withEncoding(1000);
     }
 
-    public function testChangeEncoding()
+    public function testChangeEncoding(): void
     {
         $renderer = NativeRenderer::factory();
         $this->assertNotSame($renderer->withEncoding($renderer->getEncoding()), $renderer);
@@ -67,7 +63,7 @@ class NativeRendererTest extends TestCase
         $this->assertEquals(PHP_QUERY_RFC1738, $renderer->getEncoding());
     }
 
-    public function testChangeSeparator()
+    public function testChangeSeparator(): void
     {
 
         ini_set('arg_separator.output', '~');
@@ -91,12 +87,12 @@ class NativeRendererTest extends TestCase
         ini_set('arg_separator.output', $this->defaultSeparator);
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->defaultSeparator = ini_get('arg_separator.output');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         ini_set('arg_separator.output', $this->defaultSeparator);
     }

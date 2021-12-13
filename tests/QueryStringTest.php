@@ -17,7 +17,7 @@ use function BenTools\QueryString\withoutNumericIndices;
 class QueryStringTest extends TestCase
 {
 
-    public function testFactory()
+    public function testFactory(): void
     {
         $array = ['foo' => 'bar', 'baz' => 'bat'];
         $qs = query_string($array);
@@ -42,16 +42,14 @@ class QueryStringTest extends TestCase
         $this->assertEquals([], $qs->getParams());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testFactoryFailsWithInvalidArgument()
+    public function testFactoryFailsWithInvalidArgument(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
         query_string(new \stdClass());
     }
 
 
-    public function testCurrentLocationFactory()
+    public function testCurrentLocationFactory(): void
     {
         $_SERVER['REQUEST_URI'] = 'foo=bar&baz=bat';
 
@@ -66,14 +64,14 @@ class QueryStringTest extends TestCase
 
     /**
      * In CLI mode, $_SERVER['REQUEST_URI'] should not be set.
-     * @expectedException  \RuntimeException
      */
-    public function testCurrentLocationFactoryFailsWhenNotSet()
+    public function testCurrentLocationFactoryFailsWhenNotSet(): void
     {
+        $this->expectException(\RuntimeException::class);
         QueryString::createFromCurrentLocation();
     }
 
-    public function testRenderer()
+    public function testRenderer(): void
     {
         $data = [
             'foo' => 'bar',
@@ -99,7 +97,7 @@ class QueryStringTest extends TestCase
         $this->assertEquals((string) $qs, $renderer->render($qs));
     }
 
-    public function testChangeRenderer()
+    public function testChangeRenderer(): void
     {
         $data = [
             'foo' => 'bar',
@@ -123,7 +121,7 @@ class QueryStringTest extends TestCase
         $this->assertEquals((string) $qs, $renderer->render($qs));
     }
 
-    public function testDefaultRenderer()
+    public function testDefaultRenderer(): void
     {
         $renderer = QueryString::getDefaultRenderer();
         $this->assertEquals(NativeRenderer::class, get_class(QueryString::getDefaultRenderer()));
@@ -139,21 +137,21 @@ class QueryStringTest extends TestCase
         $this->assertSame(QueryString::getDefaultRenderer(), query_string()->getRenderer());
     }
 
-    public function testAddParam()
+    public function testAddParam(): void
     {
         $qs = query_string(['foo' => 'bar']);
         $qs = $qs->withParam('bar', 'baz');
         $this->assertEquals(['foo' => 'bar', 'bar' => 'baz'], $qs->getParams());
     }
 
-    public function testReplaceParams()
+    public function testReplaceParams(): void
     {
         $qs = query_string(['foo' => 'bar']);
         $qs = $qs->withParams(['bar' => 'baz']);
         $this->assertEquals(['bar' => 'baz'], $qs->getParams());
     }
 
-    public function testSimpleGetParam()
+    public function testSimpleGetParam(): void
     {
         $qs = query_string(['foo' => 'bar']);
         $this->assertTrue($qs->hasParam('foo'));
@@ -162,7 +160,7 @@ class QueryStringTest extends TestCase
         $this->assertNull($qs->getParam('bar'));
     }
 
-    public function getComplexGetParam()
+    public function testGetComplexGetParam(): void
     {
         $data = [
             'filters' => [
@@ -195,14 +193,14 @@ class QueryStringTest extends TestCase
         $this->assertNull($qs->getParam('filters', 'bar', 0));
     }
 
-    public function testSimpleWithoutParam()
+    public function testSimpleWithoutParam(): void
     {
         $qs = query_string(['foo' => 'bar', 'bar' => 'baz']);
         $qs = $qs->withoutParam('bar');
         $this->assertEquals(['foo' => 'bar'], $qs->getParams());
     }
 
-    public function testComplexWithoutParam()
+    public function testComplexWithoutParam(): void
     {
         $data = [
             'filters' => [
@@ -291,7 +289,7 @@ class QueryStringTest extends TestCase
         ], $qs2->getParams());
     }
 
-    public function testGetPairs()
+    public function testGetPairs(): void
     {
         $qs = query_string('a=b&c=d&e[]=f&e[]=g&h[foo]=bar&h[bar][]=baz&h[bar][]=bat&boo')->withRenderer(withoutNumericIndices());
         $pairs = new IteratorIterator($qs->getPairs());
@@ -340,7 +338,7 @@ class QueryStringTest extends TestCase
         $this->assertNull($pairs->current());
     }
 
-    public function testPairsWithKeyDecoding()
+    public function testPairsWithKeyDecoding(): void
     {
         $qs = query_string('foo[bar]=baz bat');
         $pairs = new IteratorIterator($qs->getPairs(true));
@@ -349,7 +347,7 @@ class QueryStringTest extends TestCase
         $this->assertEquals('baz%20bat', $pairs->current());
     }
 
-    public function testPairsWithValueDecoding()
+    public function testPairsWithValueDecoding(): void
     {
         $qs = query_string('foo[bar]=baz bat');
         $pairs = new IteratorIterator($qs->getPairs(false, true));
@@ -358,7 +356,7 @@ class QueryStringTest extends TestCase
         $this->assertEquals('baz bat', $pairs->current());
     }
 
-    public function testChangeEncoding()
+    public function testChangeEncoding(): void
     {
         $qs = query_string(['foo' => 'foo bar']);
         $this->assertEquals('foo=foo%20bar', (string) $qs);
@@ -372,7 +370,7 @@ class QueryStringTest extends TestCase
         $this->assertEquals('foo=foo%20bar', (string) $qs);
     }
 
-    public function testImmutability()
+    public function testImmutability(): void
     {
         $qs = query_string([]);
         $qs2 = $qs->withParam('bar', 'baz');
@@ -400,7 +398,7 @@ class QueryStringTest extends TestCase
         $this->assertNotSame($qs, $qs2);
     }
 
-    public function testAnotherParser()
+    public function testAnotherParser(): void
     {
         $dummyParser = new class implements QueryStringParserInterface
         {
@@ -414,7 +412,7 @@ class QueryStringTest extends TestCase
         $this->assertEquals(['ho' => 'hi'], $qs->getParams());
     }
 
-    public function testChangeDefaultParser()
+    public function testChangeDefaultParser(): void
     {
         $dummyParser = new class implements QueryStringParserInterface
         {
