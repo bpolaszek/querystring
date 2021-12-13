@@ -1,4 +1,4 @@
-# Instanciation
+# Instantiation
 
 You can create a `QueryString` object from a PSR-7 `UriInterface` object, a string or an array of values.
 
@@ -27,7 +27,7 @@ use BenTools\QueryString\QueryString;
 $qs = QueryString::factory('foo=bar&baz=bat'); // Same argument requirements
 ```
 
-## Instanciate from current location
+## Instantiate from current location
 
 It will read `$_SERVER['QUERY_STRING']`.
 
@@ -42,6 +42,21 @@ $qs = QueryString::createFromCurrentLocation();
 ```
 
 Of course this will throw a `RuntimeException` when trying to run this from `cli` :smile:
+
+## Flat query parser
+
+By default, PHP considers that `?foo=bar&foo=baz` has a single parameter `foo` with value `baz`.
+
+If you need to parse such query strings, you can use the `FlatParser`: multiple keys will be detected and converted to arrays.
+
+```php
+use BenTools\QueryString\Parser\FlatParser;
+use function BenTools\QueryString\query_string;
+
+$qs = query_string('foo=bar&foo=baz&bar=foo', new FlatParser());
+var_dump($qs->getParam('foo')); // array('bar', 'baz')
+var_dump($qs->getParam('bar')); // string 'foo'
+```
 
 ## Create your own parser
 

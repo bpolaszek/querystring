@@ -127,6 +127,6 @@ Output:
 ```
 
 
-[Previous](Instanciation.md) - Instanciation
+[Previous](Instantiation.md) - Instantiation
 
 [Next](RenderAsString.md) - Render as string
