@@ -37,7 +37,7 @@ final class NativeRenderer implements QueryStringRendererInterface
     {
         return http_build_query(
             $queryString->getParams(),
-            null,
+            '',
             $this->separator ?? ini_get('arg_separator.output'),
             $this->encoding
         );
