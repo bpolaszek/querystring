@@ -151,6 +151,13 @@ class QueryStringTest extends TestCase
         $this->assertEquals(['bar' => 'baz'], $qs->getParams());
     }
 
+    public function testAppendParams(): void
+    {
+        $qs = query_string(['foo' => 'bar']);
+        $qs = $qs->withParams(['bar' => 'baz'], true);
+        $this->assertEquals(['foo' => 'bar', 'bar' => 'baz'], $qs->getParams());
+    }
+
     public function testSimpleGetParam(): void
     {
         $qs = query_string(['foo' => 'bar']);

@@ -178,10 +178,12 @@ final class QueryString
      * @param array $params
      * @return QueryString
      */
-    public function withParams(array $params): self
+    public function withParams(array $params, bool $append = false): self
     {
         $clone = clone $this;
-        $clone->params = [];
+        if (!$append) {
+            $clone->params = [];
+        }
         foreach ($params as $key => $value) {
             $clone->params[(string) $key] = $value;
         }
