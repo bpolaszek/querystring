@@ -11,12 +11,12 @@ final class FlatRenderer implements QueryStringRendererInterface
      */
     private $renderer;
 
-    protected function __construct(QueryStringRendererInterface $renderer = null)
+    protected function __construct(?QueryStringRendererInterface $renderer = null)
     {
         $this->renderer = $renderer;
     }
 
-    public static function factory(QueryStringRendererInterface $renderer = null)
+    public static function factory(?QueryStringRendererInterface $renderer = null)
     {
         return new self($renderer ?? NativeRenderer::factory());
     }

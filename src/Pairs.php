@@ -34,7 +34,7 @@ final class Pairs implements IteratorAggregate
         string $queryString,
         bool $decodeKeys = false,
         bool $decodeValues = false,
-        string $separator = null
+        ?string $separator = null
     ) {
 
         $this->queryString = $queryString;

@@ -12,7 +12,7 @@ use BenTools\QueryString\Renderer\QueryStringRendererInterface;
  * @return QueryString
  * @throws \InvalidArgumentException
  */
-function query_string($input = null, QueryStringParserInterface $queryStringParser = null): QueryString
+function query_string($input = null, ?QueryStringParserInterface $queryStringParser = null): QueryString
 {
     return QueryString::factory($input, $queryStringParser);
 }
@@ -21,7 +21,7 @@ function query_string($input = null, QueryStringParserInterface $queryStringPars
  * @param QueryStringRendererInterface|null $renderer
  * @return ArrayValuesNormalizerRenderer
  */
-function withoutNumericIndices(QueryStringRendererInterface $renderer = null): ArrayValuesNormalizerRenderer
+function withoutNumericIndices(?QueryStringRendererInterface $renderer = null): ArrayValuesNormalizerRenderer
 {
     return ArrayValuesNormalizerRenderer::factory($renderer);
 }
@@ -30,7 +30,7 @@ function withoutNumericIndices(QueryStringRendererInterface $renderer = null): A
  * @param QueryStringRendererInterface|null $renderer
  * @return FlatRenderer
  */
-function flat(QueryStringRendererInterface $renderer = null): FlatRenderer
+function flat(?QueryStringRendererInterface $renderer = null): FlatRenderer
 {
     return FlatRenderer::factory($renderer);
 }
@@ -42,7 +42,7 @@ function flat(QueryStringRendererInterface $renderer = null): FlatRenderer
  * @param string|null $separator
  * @return Pairs
  */
-function pairs(string $queryString, bool $decodeKeys = false, bool $decodeValues = false, string $separator = null): Pairs
+function pairs(string $queryString, bool $decodeKeys = false, bool $decodeValues = false, ?string $separator = null): Pairs
 {
     return new Pairs($queryString, $decodeKeys, $decodeValues, $separator);
 }
