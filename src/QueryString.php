@@ -78,7 +78,7 @@ final class QueryString
      * @return QueryString
      * @throws \RuntimeException
      */
-    public static function createFromCurrentLocation(QueryStringParserInterface $queryStringParser = null): self
+    public static function createFromCurrentLocation(?QueryStringParserInterface $queryStringParser = null): self
     {
         if (!isset($_SERVER['REQUEST_URI'])) {
             throw new \RuntimeException('$_SERVER[\'REQUEST_URI\'] has not been set.');
@@ -102,7 +102,7 @@ final class QueryString
      * @throws \InvalidArgumentException
      * @throws \TypeError
      */
-    public static function factory($input = null, QueryStringParserInterface $queryStringParser = null): self
+    public static function factory($input = null, ?QueryStringParserInterface $queryStringParser = null): self
     {
         if (is_array($input)) {
             return self::createFromParams($input);
